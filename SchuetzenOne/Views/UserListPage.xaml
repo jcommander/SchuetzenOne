@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SchuetzenOne.Models"
+             xmlns:viewmodels="clr-namespace:SchuetzenOne.ViewModels"
+             x:Class="SchuetzenOne.Views.UserListPage"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             ios:Page.UseSafeArea="True"
+             Title="Users"
+             x:DataType="viewmodels:UserListViewModel">
+    <Grid RowDefinitions="*,Auto">
+        <Label Text="Aktiv"
+               Grid.Row="1"
+               VerticalTextAlignment="Center"
+               IsVisible="True"/>
+        <RefreshView
+            Grid.ColumnSpan="2"
+            Command="{Binding GetUsersCommand}"
+            IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView 
+                  VerticalOptions="Fill"
+                  ItemsSource="{Binding Users}"
+                  SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:User">
+                        <Frame Margin="10" Padding="10">
+                            <Grid ColumnDefinitions="*, Auto" Padding="20">
+                                <Label Text="{Binding Name}"
+                                   VerticalTextAlignment="Center"/>
+                                <Label Text="✔️"
+                                   Grid.Column="1"
+                                   VerticalTextAlignment="Center"
+                                   IsVisible="{Binding Active}"/>
+                                <Label Text="🎁"
+                                   Grid.Column="1"
+                                   VerticalTextAlignment="Center"
+                                   IsVisible="{Binding HasBirthday}"/>
+                            </Grid>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:UserListViewModel}}, Path=EditUserCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <Button
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="8"
+            Command="{Binding GetUsersCommand}"
+            IsEnabled="{Binding IsNotBusy}"
+            Text="Get Users" />
+    </Grid>
+</ContentPage>

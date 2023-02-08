@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Class="SchuetzenOne.Views.UserEditPage"
+             Title="Schütze bearbeiten"
+             xmlns:models="clr-namespace:SchuetzenOne.Models"
+             xmlns:viewmodels="clr-namespace:SchuetzenOne.ViewModels"
+             x:DataType="viewmodels:UserDetailViewModel">
+    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+        <VerticalStackLayout 
+                    Grid.Column="0"
+                    Padding="20"
+                    Spacing="10"
+                    VerticalOptions="StartAndExpand">
+            <Label Text="Name" />
+            <Entry Text="{Binding User.Name}" />
+            <Label Text="E-Mail" />
+            <Entry Text="{Binding User.Email}" />
+            <Label Text="Geburtstag" />
+            <DatePicker Date="{Binding User.Birthday}"/>
+            <Label Text="Aktiv" />
+            <Label Text="✔️"
+                   VerticalTextAlignment="Center"
+                   IsVisible="{Binding User.Active}"/>
+        </VerticalStackLayout>
+
+        <Grid
+            Grid.Column="1"
+            ColumnDefinitions="*"
+            ColumnSpacing="5"
+            RowDefinitions="*"
+            RowSpacing="0">
+            <ScrollView>
+                <CollectionView 
+                                x:Name="trainingDaysList"
+                                VerticalOptions="Fill"
+                                ItemsSource="{Binding User.TrainingDays}"
+                                SelectionMode="Single">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TrainingDays">
+                            <Grid ColumnDefinitions="*, *">
+                                <Label Grid.Column="0"
+                                    Text="{Binding ID}"
+                                    VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="1"
+                                    Text="{Binding Date}"
+                                    VerticalTextAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+        </Grid>
+        <VerticalStackLayout 
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Padding="20"
+                    Spacing="10"
+                    VerticalOptions="StartAndExpand">
+            <DatePicker Date="{Binding TrainingDatePicker}"/>
+            <Button Text="Hinzufügen"
+                        HorizontalOptions="StartAndExpand"
+                        Command="{Binding DateSubmitCommand}"/>
+            <Button Text="Refresh"
+                        HorizontalOptions="StartAndExpand"
+                        Command="{Binding GetTrainingDaysCommand}"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout
+                Grid.ColumnSpan="2"
+                Grid.Row="1"
+                Padding="12"
+                Spacing="6"
+                VerticalOptions="End">
+            <Button Text="Speichern"
+                        Command="{Binding AddUpdateUserCommand }" />
+            <Button Text="Löschen"
+                        TextColor="Red"
+                        Command="{Binding DeleteUserCommand }" />
+            <Button Text="Abbrechen"
+                        Command="{Binding CancelCommand }" />
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>
