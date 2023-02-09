@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="SchuetzenOne.Views.UserEditPage"
-             Title="Schütze bearbeiten"
              xmlns:models="clr-namespace:SchuetzenOne.Models"
              xmlns:viewmodels="clr-namespace:SchuetzenOne.ViewModels"
-             x:DataType="viewmodels:UserDetailViewModel">
+             x:DataType="viewmodels:UserDetailViewModel"
+             Title="Schütze bearbeiten">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:ListToStringConverter x:Key="ListToStringConverter" Separator="," />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid ColumnDefinitions="*,*" RowDefinitions="*,auto,auto">
         <VerticalStackLayout 
                     Grid.Column="0"
@@ -22,45 +30,44 @@
             <Button Text="Speichern"
                         Command="{Binding AddUpdateUserCommand }" />
 
-            <Label Padding="6 0" Text="Gebühr" />
-            <Label Text="{Binding User.Fee, Mode=OneWay, StringFormat='{0}€'}"
+            <Label Padding="0, 12, 0, 0" Text="Gebühr" />
+            <Label Padding="8, 0, 0, 0" Text="{Binding User.Fee, Mode=OneWay, StringFormat='{0}€'}"
                    VerticalTextAlignment="Center"/>
 
-            <Label Padding="6 0" Text="Aktiv" />
-            <Label Text="✔️"
+            <Label Padding="0, 12, 0, 0" Text="Aktiv" />
+            <Label Padding="8, 0, 0, 0"
+                   Text="✔️"
                    VerticalTextAlignment="Center"
                    IsVisible="{Binding User.Active}"/>
 
         </VerticalStackLayout>
-
+        
         <Grid
             Grid.Column="0"
             Grid.Row="1"
-            ColumnDefinitions="350"
-            RowDefinitions="*,auto">
-            <VerticalStackLayout Grid.Row="0">
-                <ScrollView>
-                    <CollectionView 
+            RowSpacing="12"
+            ColumnDefinitions="300"
+            RowDefinitions="*,auto,auto">
+            <ScrollView VerticalOptions="EndAndExpand" Grid.Row="0" HeightRequest="100">
+                <CollectionView
                         x:Name="departmentList"
                         VerticalOptions="Fill"
                         ItemsSource="{Binding User.Departments}"
                         SelectionMode="Single">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:Department">
-                                <Grid ColumnDefinitions="*, *">
-                                    <Label Grid.Column="0"
-                                        Text="{Binding Name}"
-                                        VerticalTextAlignment="Center"/>
-                                    <Label Grid.Column="1" WidthRequest="30"
-                                        Text="{Binding Fee, Mode=OneWay, StringFormat='{0}€'}"
-                                        VerticalTextAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </ScrollView>
-            </VerticalStackLayout>
-            <Button Grid.Row="1" 
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Department">
+                            <Label
+                                Text="{Binding Name}"
+                                HorizontalTextAlignment="Center"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+            <Line Grid.Row="1" 
+                Stroke="LightGray"
+                StrokeLineCap="Round"
+                X2="275" />
+            <Button Grid.Row="2" 
                 Text="Hinzufügen"
                 HorizontalOptions="StartAndExpand"
                 Command="{Binding DepartmentSubmitCommand}"/>
@@ -69,9 +76,8 @@
             Grid.Column="1"
             Grid.RowSpan="2"
             ColumnDefinitions="*"
-            ColumnSpacing="5"
-            RowDefinitions="*,*"
-            RowSpacing="0">
+            RowDefinitions="*,auto,auto"
+            RowSpacing="12">
             <ScrollView Grid.Row="0">
                 <CollectionView 
                     x:Name="trainingDaysList"
@@ -90,8 +96,12 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </ScrollView>
+            <Line Grid.Row="1"
+                Stroke="LightGray"
+                StrokeLineCap="Round"
+                X2="320" />
             <VerticalStackLayout 
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Padding="20"
                     Spacing="10"
                     VerticalOptions="StartAndExpand">

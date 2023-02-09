@@ -29,10 +29,10 @@ public class User
     
     /* Lists */
 
-    [ManyToMany(typeof(UserDepartments))]
+    [ManyToMany(typeof(UserDepartments), CascadeOperations = CascadeOperation.All)]
     public ObservableCollection<Department> Departments { get; set; } = new ObservableCollection<Department>();
 
-    [ManyToMany(typeof(UserTrainings))]
+    [ManyToMany(typeof(UserTrainings), CascadeOperations = CascadeOperation.All)]
     public ObservableCollection<TrainingDays> TrainingDays { get; set; } = new ObservableCollection<TrainingDays>();
 
 }

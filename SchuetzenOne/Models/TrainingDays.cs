@@ -11,6 +11,6 @@ public class TrainingDays
     [NotNull]
     public DateTime Date { get; set; }
 
-    [ManyToMany(typeof(UserTrainings))]
+    [ManyToMany(typeof(UserTrainings), CascadeOperations = CascadeOperation.All)]
     public List<User> Users { get; set; }
 }

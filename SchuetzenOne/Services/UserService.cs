@@ -16,6 +16,8 @@ public class UserService : IUserService
             return;
 
         Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
+        Database.Tracer = new Action<string>(q => Debug.WriteLine(q)); // Writes SQL Commands of API to Debug Console
+        Database.Trace = true;
         var result = await Database.CreateTablesAsync<User, Department, TrainingDays, UserDepartments, UserTrainings>();
     }
 
@@ -68,11 +70,15 @@ public class UserService : IUserService
         await Init();
 
         //var todos = await Database.Table<TodoItem>().ToListAsync();
-        var users = await Database.Table<User>().ToListAsync();
+        var users = await Database.GetAllWithChildrenAsync<User>();
         foreach (User user in users)
         {
-            await Database.GetChildrenAsync(user);
-            //Database.GetAllWithChildrenAsync<User>
+            //user.TrainingDays = (ObservableCollection<TrainingDays>)user.TrainingDays.OrderBy(d => d.Date);
+            //user.TrainingDays.Sort(tDay => tDay.Date, System.ComponentModel.ListSortDirection.Descending);
+            //user.TrainingDays = (ObservableCollection<TrainingDays>)user.TrainingDays.OrderByDescending(tday => tday.Date.Ticks);
+            //await Database.GetChildrenAsync(user);
+            //user.TrainingDays.OrderByDescending(tday => tday.Date);
+
             //todos.Add(new TodoItem { Name = user.Name, Notes = user.Email });
         }
         return users;
@@ -107,9 +113,9 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<int> DeleteItemAsync(User user)
+    public async Task DeleteItemAsync(User user)
     {
         await Init();
-        return await Database.DeleteAsync(user);
+        await Database.DeleteAsync(user, true);
     }
 }

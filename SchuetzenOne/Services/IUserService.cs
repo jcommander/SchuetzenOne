@@ -9,7 +9,7 @@ namespace SchuetzenOne.Services
         Task<List<User>> GetInactiveUsersAsync();
         Task<User> GetUserAsync(int id);
         Task<int> SaveUserAsync(User user);
-        Task<int> DeleteItemAsync(User user);
+        Task DeleteItemAsync(User user);
         Task<Department> AddDepartmentAsync(User user);
     }
 }

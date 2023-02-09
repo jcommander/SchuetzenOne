@@ -9,10 +9,6 @@
              Title="Users"
              x:DataType="viewmodels:UserListViewModel">
     <Grid RowDefinitions="*,Auto">
-        <Label Text="Aktiv"
-               Grid.Row="1"
-               VerticalTextAlignment="Center"
-               IsVisible="True"/>
         <RefreshView
             Grid.ColumnSpan="2"
             Command="{Binding GetUsersCommand}"
@@ -27,14 +23,14 @@
                             <Grid ColumnDefinitions="*, Auto" Padding="20">
                                 <Label Text="{Binding Name}"
                                    VerticalTextAlignment="Center"/>
-                                <Label Text="✔️"
-                                   Grid.Column="1"
-                                   VerticalTextAlignment="Center"
-                                   IsVisible="{Binding Active}"/>
-                                <Label Text="🎁"
-                                   Grid.Column="1"
-                                   VerticalTextAlignment="Center"
-                                   IsVisible="{Binding HasBirthday}"/>
+                                <HorizontalStackLayout Grid.Column="1" Spacing="12">
+                                    <Label Text="✔️"
+                                       VerticalTextAlignment="Center"
+                                       IsVisible="{Binding Active}"/>
+                                    <Label Text="🎁"
+                                       VerticalTextAlignment="Center"
+                                       IsVisible="{Binding HasBirthday}"/>
+                                </HorizontalStackLayout>
                             </Grid>
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer 
@@ -46,12 +42,19 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <Button
+        <VerticalStackLayout
             Grid.Row="1"
-            Grid.Column="0"
-            Margin="8"
+            Grid.Column="0">
+            <Button
+            Margin="16, 6"
+            Command="{Binding AddUserCommand}"
+            IsEnabled="{Binding IsNotBusy}"
+            Text="Add User" />
+            <Button
+            Margin="16, 6"
             Command="{Binding GetUsersCommand}"
             IsEnabled="{Binding IsNotBusy}"
             Text="Get Users" />
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>
