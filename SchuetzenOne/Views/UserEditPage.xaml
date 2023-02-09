@@ -7,7 +7,7 @@
              xmlns:models="clr-namespace:SchuetzenOne.Models"
              xmlns:viewmodels="clr-namespace:SchuetzenOne.ViewModels"
              x:DataType="viewmodels:UserDetailViewModel">
-    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*">
+    <Grid ColumnDefinitions="*,*" RowDefinitions="*,auto,auto">
         <VerticalStackLayout 
                     Grid.Column="0"
                     Padding="20"
@@ -19,62 +19,98 @@
             <Entry Text="{Binding User.Email}" />
             <Label Text="Geburtstag" />
             <DatePicker Date="{Binding User.Birthday}"/>
-            <Label Text="Aktiv" />
+            <Button Text="Speichern"
+                        Command="{Binding AddUpdateUserCommand }" />
+
+            <Label Padding="6 0" Text="Gebühr" />
+            <Label Text="{Binding User.Fee, Mode=OneWay, StringFormat='{0}€'}"
+                   VerticalTextAlignment="Center"/>
+
+            <Label Padding="6 0" Text="Aktiv" />
             <Label Text="✔️"
                    VerticalTextAlignment="Center"
                    IsVisible="{Binding User.Active}"/>
+
         </VerticalStackLayout>
 
         <Grid
+            Grid.Column="0"
+            Grid.Row="1"
+            ColumnDefinitions="350"
+            RowDefinitions="*,auto">
+            <VerticalStackLayout Grid.Row="0">
+                <ScrollView>
+                    <CollectionView 
+                        x:Name="departmentList"
+                        VerticalOptions="Fill"
+                        ItemsSource="{Binding User.Departments}"
+                        SelectionMode="Single">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Department">
+                                <Grid ColumnDefinitions="*, *">
+                                    <Label Grid.Column="0"
+                                        Text="{Binding Name}"
+                                        VerticalTextAlignment="Center"/>
+                                    <Label Grid.Column="1" WidthRequest="30"
+                                        Text="{Binding Fee, Mode=OneWay, StringFormat='{0}€'}"
+                                        VerticalTextAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </VerticalStackLayout>
+            <Button Grid.Row="1" 
+                Text="Hinzufügen"
+                HorizontalOptions="StartAndExpand"
+                Command="{Binding DepartmentSubmitCommand}"/>
+        </Grid>
+        <Grid
             Grid.Column="1"
+            Grid.RowSpan="2"
             ColumnDefinitions="*"
             ColumnSpacing="5"
-            RowDefinitions="*"
+            RowDefinitions="*,*"
             RowSpacing="0">
-            <ScrollView>
+            <ScrollView Grid.Row="0">
                 <CollectionView 
-                                x:Name="trainingDaysList"
-                                VerticalOptions="Fill"
-                                ItemsSource="{Binding User.TrainingDays}"
-                                SelectionMode="Single">
+                    x:Name="trainingDaysList"
+                    VerticalOptions="Fill"
+                    ItemsSource="{Binding User.TrainingDays}"
+                    SelectionMode="Single">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:TrainingDays">
-                            <Grid ColumnDefinitions="*, *">
+                            <Grid ColumnDefinitions="*, auto" ColumnSpacing="12">
                                 <Label Grid.Column="0"
-                                    Text="{Binding ID}"
-                                    VerticalTextAlignment="Center"/>
+                                    Text="{Binding ID}"/>
                                 <Label Grid.Column="1"
-                                    Text="{Binding Date}"
-                                    VerticalTextAlignment="Center"/>
+                                    Text="{Binding Date.Date}"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </ScrollView>
-        </Grid>
-        <VerticalStackLayout 
-                    Grid.Column="1"
+            <VerticalStackLayout 
                     Grid.Row="1"
                     Padding="20"
                     Spacing="10"
                     VerticalOptions="StartAndExpand">
-            <DatePicker Date="{Binding TrainingDatePicker}"/>
-            <Button Text="Hinzufügen"
+                <DatePicker Date="{Binding TrainingDatePicker}"/>
+                <Button Text="Hinzufügen"
                         HorizontalOptions="StartAndExpand"
                         Command="{Binding DateSubmitCommand}"/>
-            <Button Text="Refresh"
+                <Button Text="Refresh"
                         HorizontalOptions="StartAndExpand"
                         Command="{Binding GetTrainingDaysCommand}"/>
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
 
         <VerticalStackLayout
                 Grid.ColumnSpan="2"
-                Grid.Row="1"
-                Padding="12"
-                Spacing="6"
+                Grid.Row="2"
+                Padding="32"
+                Spacing="12"
                 VerticalOptions="End">
-            <Button Text="Speichern"
-                        Command="{Binding AddUpdateUserCommand }" />
             <Button Text="Löschen"
                         TextColor="Red"
                         Command="{Binding DeleteUserCommand }" />

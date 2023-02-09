@@ -10,5 +10,6 @@ namespace SchuetzenOne.Services
         Task<User> GetUserAsync(int id);
         Task<int> SaveUserAsync(User user);
         Task<int> DeleteItemAsync(User user);
+        Task<Department> AddDepartmentAsync(User user);
     }
 }

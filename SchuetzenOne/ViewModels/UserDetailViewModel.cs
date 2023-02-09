@@ -30,6 +30,12 @@ public partial class UserDetailViewModel : BaseViewModel
         //trainingDays.Add(result);
     }
 
+    [RelayCommand]
+    async Task DepartmentSubmit()
+    {
+        await _userService.AddDepartmentAsync(User);
+        //trainingDays.Add(result);
+    }
 
     [RelayCommand]
     async Task GetTrainingDays()
@@ -48,7 +54,7 @@ public partial class UserDetailViewModel : BaseViewModel
         }
 
         await _userService.SaveUserAsync(User);
-        await Shell.Current.DisplayAlert("Student Info Saved", "Record Saved", "OK");
+        await Shell.Current.DisplayAlert("Schütze aktualisiert", "Speichern erfolgreich", "OK");
         await Shell.Current.GoToAsync("..");
     }
 

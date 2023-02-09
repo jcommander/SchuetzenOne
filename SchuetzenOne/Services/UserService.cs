@@ -16,8 +16,31 @@ public class UserService : IUserService
             return;
 
         Database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-        var result = await Database.CreateTablesAsync<User, TrainingDays, UserTrainings>();
+        var result = await Database.CreateTablesAsync<User, Department, TrainingDays, UserDepartments, UserTrainings>();
     }
+
+    public async Task<Department> AddDepartmentAsync(User user)
+    {
+        await Init();
+        Department depRec = null; //= await Database.Table<TrainingDays>().Where(i => i.Date == date).FirstOrDefaultAsync();
+        if (depRec == null)
+        {
+            var newRec = new Department { Name = "Neue Abteilung! Pew Pew", Fee = 20 };
+            var result = await Database.InsertAsync(newRec);
+            depRec = newRec;
+            /*
+            dateRec = await Database.Table<TrainingDays>().Where(i => i.ID == newRec.ID).FirstOrDefaultAsync();
+            if (result > 1 || dateRec == null || newRec.ID != dateRec.ID)
+                throw new Exception();*/
+        }
+        if (!user.Departments.Any(d => d.ID == depRec.ID))
+        {  // Even though the DBMS won't add Duplicates our View(Model) would show them
+            user.Departments.Add(depRec);
+        }
+        await Database.UpdateWithChildrenAsync(user);
+        return depRec;
+    }
+
 
     public async Task<TrainingDays> AddDateAsync(User user, DateTime date)
     {
@@ -27,6 +50,7 @@ public class UserService : IUserService
         {
             var newRec = new TrainingDays { Date = date };
             var result = await Database.InsertAsync(newRec);
+            dateRec = newRec;
             /*
             dateRec = await Database.Table<TrainingDays>().Where(i => i.ID == newRec.ID).FirstOrDefaultAsync();
             if (result > 1 || dateRec == null || newRec.ID != dateRec.ID)
