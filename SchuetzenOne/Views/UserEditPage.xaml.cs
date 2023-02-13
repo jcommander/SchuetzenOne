@@ -8,4 +8,8 @@ public partial class UserEditPage : ContentPage
         this.BindingContext = vm;
     }
 
+    private void Entry_Unfocused(object sender, FocusEventArgs e)
+    {
+
+    }
 }

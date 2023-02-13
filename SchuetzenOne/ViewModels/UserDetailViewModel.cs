@@ -13,14 +13,21 @@ public partial class UserDetailViewModel : BaseViewModel
     [ObservableProperty]
     bool isRefreshing;
 
+    public List<Department> AllDepartments { get; set; } = new List<Department>();
+
     [ObservableProperty]
     public DateTime _trainingDatePicker = DateTime.UtcNow;
 
+    [ObservableProperty]
+    public Department _departmentPicker = null;
+
+    string entryText = "";
 
     private readonly IUserService _userService;
     public UserDetailViewModel(IUserService userService)
     {
         _userService = userService;
+        AllDepartments = _userService.AllDepartments; // Get Departments from UserService
     }
 
     [RelayCommand]
@@ -33,20 +40,52 @@ public partial class UserDetailViewModel : BaseViewModel
     [RelayCommand]
     async Task DepartmentSubmit()
     {
-        await _userService.AddDepartmentAsync(User);
+        if (DepartmentPicker != null)
+        {
+            await _userService.AddDepartmentAsync(User, DepartmentPicker);
+            OnPropertyChanging(nameof(User));
+            User.Fee = _userService.UpdateFee(User);
+            OnPropertyChanged(nameof(User));
+        }
+        else
+            await Shell.Current.DisplayAlert("Abteilung wählen", "Bitte wähle eine Abteilung für deinen Schützen", "OK");
+
+        //trainingDays.Add(result);
+    }
+
+    [RelayCommand]
+    async Task DepartmentRemove()
+    {
+        if (DepartmentPicker != null)
+        {
+            await _userService.RemoveDepartmentAsync(User, DepartmentPicker);
+            OnPropertyChanging(nameof(User));
+            User.Fee = _userService.UpdateFee(User);
+            OnPropertyChanged(nameof(User));
+        }
+        else
+            await Shell.Current.DisplayAlert("Abteilung wählen", "Bitte wähle eine Abteilung für deinen Schützen", "OK");
+
         //trainingDays.Add(result);
     }
 
     [RelayCommand]
     async Task GetTrainingDays()
     {
-        var u = await _userService.GetUserAsync(User.ID);
+        var u = await _userService.GetUserAsync(User.ID, true);
         User = u;
     }
 
     [RelayCommand]
     async Task AddUpdateUser()
     {
+        if (User.ID != 0)
+        {
+            User usr = await _userService.GetUserAsync(User.ID, false);
+            if (usr.Name == User.Name && usr.Email == User.Email)
+                return;
+        }
+
         if (string.IsNullOrWhiteSpace(User.Name))
         {
             await Shell.Current.DisplayAlert("Name benötigt", "Bitte gebe einen Namen für deinen Schützen ein", "OK");
@@ -54,8 +93,8 @@ public partial class UserDetailViewModel : BaseViewModel
         }
 
         await _userService.SaveUserAsync(User);
-        await Shell.Current.DisplayAlert("Schütze aktualisiert", "Speichern erfolgreich", "OK");
-        await Shell.Current.GoToAsync("..");
+        //await Shell.Current.DisplayAlert("Schütze aktualisiert", "Speichern erfolgreich", "OK");
+        //await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]

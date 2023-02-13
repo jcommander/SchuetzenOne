@@ -7,5 +7,13 @@ public partial class UserListPage : ContentPage
 		InitializeComponent();
         BindingContext = vm;
     }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        UserListViewModel viewModel = (UserListViewModel)BindingContext;
+        viewModel.Refresh();
+
+        base.OnNavigatedTo(args);
+    }
 }
 

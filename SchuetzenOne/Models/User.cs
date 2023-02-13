@@ -21,7 +21,7 @@ public class User
     public bool HasBirthday { get; set; } = false;
 
     [Ignore]
-    public int Fee { get; set; } = 25;
+    public int Fee { get; set; } = -1;
 
     [Ignore]
     public bool Active { get; set; } = false;

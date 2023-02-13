@@ -6,8 +6,19 @@
              x:Class="SchuetzenOne.Views.UserListPage"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="True"
-             Title="Users"
+             Title="Der glühende Colt"
              x:DataType="viewmodels:UserListViewModel">
+    
+    <ContentPage.Background>
+        <!-- StartPoint defaults to (0,0) -->
+        <LinearGradientBrush StartPoint="0.6,0" EndPoint="0.5,1">
+            <GradientStop Color="#121212"
+                          Offset="0.85" />
+            <GradientStop Color="#606B9D40"
+                          Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
     <Grid RowDefinitions="*,Auto">
         <RefreshView
             Grid.ColumnSpan="2"
@@ -19,8 +30,8 @@
                   SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:User">
-                        <Frame Margin="10" Padding="10">
-                            <Grid ColumnDefinitions="*, Auto" Padding="20">
+                        <Frame Margin="8" Padding="30">
+                            <Grid ColumnDefinitions="*, Auto">
                                 <Label Text="{Binding Name}"
                                    VerticalTextAlignment="Center"/>
                                 <HorizontalStackLayout Grid.Column="1" Spacing="12">
@@ -51,10 +62,11 @@
             IsEnabled="{Binding IsNotBusy}"
             Text="Add User" />
             <Button
-            Margin="16, 6"
-            Command="{Binding GetUsersCommand}"
-            IsEnabled="{Binding IsNotBusy}"
-            Text="Get Users" />
+                Margin="16, 6"
+                
+                Command="{Binding GetUsersCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Text="Get Users" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>

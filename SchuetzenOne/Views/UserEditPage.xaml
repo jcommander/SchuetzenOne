@@ -9,6 +9,16 @@
              x:DataType="viewmodels:UserDetailViewModel"
              Title="Schütze bearbeiten">
 
+    <ContentPage.Background>
+        <!-- StartPoint defaults to (0,0) -->
+        <LinearGradientBrush StartPoint="0.6,0" EndPoint="0.5,1">
+            <GradientStop Color="#121212"
+                          Offset="0.85" />
+            <GradientStop Color="#606B9D40"
+                          Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <toolkit:ListToStringConverter x:Key="ListToStringConverter" Separator="," />
@@ -22,16 +32,26 @@
                     Spacing="10"
                     VerticalOptions="StartAndExpand">
             <Label Text="Name" />
-            <Entry Text="{Binding User.Name}" />
+            <Entry Text="{Binding User.Name}" >
+				<Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding EntryEnterCommand}"/>
+                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding AddUpdateUserCommand}"/>
+				</Entry.Behaviors>
+            </Entry>
             <Label Text="E-Mail" />
-            <Entry Text="{Binding User.Email}" />
-            <Label Text="Geburtstag" />
+            <Entry Text="{Binding User.Email}" >
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding EntryEnterCommand}"/>
+                    <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding AddUpdateUserCommand}"/>
+                </Entry.Behaviors>
+            </Entry>
+            <Label Text="Geburtstag" /> 
             <DatePicker Date="{Binding User.Birthday}"/>
             <Button Text="Speichern"
                         Command="{Binding AddUpdateUserCommand }" />
 
             <Label Padding="0, 12, 0, 0" Text="Gebühr" />
-            <Label Padding="8, 0, 0, 0" Text="{Binding User.Fee, Mode=OneWay, StringFormat='{0}€'}"
+            <Label Padding="8, 0, 0, 0" Text="{Binding User.Fee, StringFormat='{0} €'}"
                    VerticalTextAlignment="Center"/>
 
             <Label Padding="0, 12, 0, 0" Text="Aktiv" />
@@ -67,10 +87,24 @@
                 Stroke="LightGray"
                 StrokeLineCap="Round"
                 X2="275" />
-            <Button Grid.Row="2" 
-                Text="Hinzufügen"
-                HorizontalOptions="StartAndExpand"
-                Command="{Binding DepartmentSubmitCommand}"/>
+            <HorizontalStackLayout Grid.Row="2">
+                <Picker Title="Abteilung"
+                        Margin="5"
+                        WidthRequest="120"
+                        ItemsSource="{Binding AllDepartments}"
+                        ItemDisplayBinding="{Binding Name}"
+                        SelectedItem="{Binding DepartmentPicker}"/>
+                <Button 
+                    Text="Hinzufügen"
+                    HeightRequest="45"
+                    HorizontalOptions="StartAndExpand"
+                    Command="{Binding DepartmentSubmitCommand}"/>
+                <Button 
+                    Text="Entfernen"
+                    HeightRequest="45"
+                    HorizontalOptions="StartAndExpand"
+                    Command="{Binding DepartmentRemoveCommand}"/>
+            </HorizontalStackLayout>
         </Grid>
         <Grid
             Grid.Column="1"

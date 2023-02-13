@@ -13,6 +13,11 @@ public partial class UserListViewModel : BaseViewModel
     {
         _userService = userService;
         Rand = new Random();
+        //Task.Run(async () => await GetUsersAsync());
+    }
+
+    public void Refresh()
+    {
         Task.Run(async () => await GetUsersAsync());
     }
 
@@ -56,6 +61,7 @@ public partial class UserListViewModel : BaseViewModel
                 }
 
                 user.HasBirthday = DateTime.Today == user.Birthday.Date;
+                user.Fee = _userService.UpdateFee(user);
                 Users.Add(user);
             }
 
@@ -92,40 +98,4 @@ public partial class UserListViewModel : BaseViewModel
         });
     }
 
-/*        [RelayCommand]
-    async Task OnDateSubmitClicked()
-    {
-        //var result = await _userService.AddDateAsync(User, TrainingDatePicker.Date);
-        //trainingDays.Add(result);
-    }*/
-
-/*        [RelayCommand]
-    async Task AddUpdateUser()
-    {
-        if (string.IsNullOrWhiteSpace(User.Name))
-        {
-            await Shell.Current.DisplayAlert("Name benötigt", "Bitte gebe einen Namen für deinen Schützen ein", "OK");
-            return;
-        }
-
-        await _userService.SaveUserAsync(User);
-        await Shell.Current.DisplayAlert("Student Info Saved", "Record Saved", "OK");
-        await Shell.Current.GoToAsync("..");
-    }
-
-    [RelayCommand]
-    async void DeleteUser()
-    {
-        if (User.ID == 0)
-            return;
-
-        await _userService.DeleteItemAsync(User);
-        await Shell.Current.GoToAsync("..");
-    }
-
-    [RelayCommand]
-    async void Cancel()
-    {
-        await Shell.Current.GoToAsync("..");
-    }*/
 }
