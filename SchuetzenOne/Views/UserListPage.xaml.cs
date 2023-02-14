@@ -11,9 +11,10 @@ public partial class UserListPage : ContentPage
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         UserListViewModel viewModel = (UserListViewModel)BindingContext;
-        viewModel.Refresh();
+        if (viewModel.GetUsersCommand.CanExecute(null))
+            viewModel.GetUsersCommand.Execute(null);
 
-        base.OnNavigatedTo(args);
+        //base.OnNavigatedTo(args);
     }
 }
 

@@ -34,7 +34,15 @@ public partial class UserDetailViewModel : BaseViewModel
     async Task DateSubmit()
     {
         await _userService.AddDateAsync(User, TrainingDatePicker.Date);
+        updateInfo(true);
         //trainingDays.Add(result);
+    }
+
+    private void updateInfo(bool getRegular = false)
+    {
+        OnPropertyChanging(nameof(User));
+        _userService.updateUserLocals(User, getRegular);
+        OnPropertyChanged(nameof(User));
     }
 
     [RelayCommand]
@@ -43,9 +51,7 @@ public partial class UserDetailViewModel : BaseViewModel
         if (DepartmentPicker != null)
         {
             await _userService.AddDepartmentAsync(User, DepartmentPicker);
-            OnPropertyChanging(nameof(User));
-            User.Fee = _userService.UpdateFee(User);
-            OnPropertyChanged(nameof(User));
+            updateInfo(false);
         }
         else
             await Shell.Current.DisplayAlert("Abteilung wählen", "Bitte wähle eine Abteilung für deinen Schützen", "OK");
@@ -59,9 +65,7 @@ public partial class UserDetailViewModel : BaseViewModel
         if (DepartmentPicker != null)
         {
             await _userService.RemoveDepartmentAsync(User, DepartmentPicker);
-            OnPropertyChanging(nameof(User));
-            User.Fee = _userService.UpdateFee(User);
-            OnPropertyChanged(nameof(User));
+            updateInfo(false);
         }
         else
             await Shell.Current.DisplayAlert("Abteilung wählen", "Bitte wähle eine Abteilung für deinen Schützen", "OK");
@@ -82,7 +86,7 @@ public partial class UserDetailViewModel : BaseViewModel
         if (User.ID != 0)
         {
             User usr = await _userService.GetUserAsync(User.ID, false);
-            if (usr.Name == User.Name && usr.Email == User.Email)
+            if (usr.Name == User.Name && usr.Email == User.Email && usr.Birthday == User.Birthday)
                 return;
         }
 

@@ -1,0 +1,14 @@
+﻿[
+  {
+    "Name": "Bogen",
+    "Fee": 8
+  },
+  {
+    "Name": "Luftdruck",
+    "Fee": 10
+  },
+  {
+    "Name": "Feuerwaffen",
+    "Fee": 15
+  }
+]

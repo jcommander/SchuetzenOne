@@ -22,6 +22,23 @@ public class UserService : IUserService
         Database.Tracer = new Action<string>(q => Debug.WriteLine(q)); // Writes SQL Commands of API to Debug Console
         Database.Trace = true;
         var result = await Database.CreateTablesAsync<User, Department, TrainingDays, UserDepartments, UserTrainings>();
+        await checkDefaultData();
+    }
+
+    public async Task checkDefaultData()
+    {
+        // Departments
+        int NrofDeps = await Database.Table<Department>().CountAsync();
+        if (NrofDeps != 3)
+        {
+            // Offline
+            using var stream = await FileSystem.OpenAppPackageFileAsync("DefaultDepartments.json");
+            using var reader = new StreamReader(stream);
+            var contents = await reader.ReadToEndAsync();
+            List<Department> depList = JsonSerializer.Deserialize<List<Department>>(contents);
+
+            await Database.InsertAllAsync(depList);
+        }
     }
 
     public async Task<Department> AddDepartmentAsync(User user, Department dep)
@@ -46,7 +63,6 @@ public class UserService : IUserService
         {
             user.Departments.Add(dep);
             await Database.UpdateWithChildrenAsync(user);
-            user.Fee = UpdateFee(user);
         }
        return dep;
     }
@@ -61,7 +77,6 @@ public class UserService : IUserService
             if (rem)
                 await Database.UpdateWithChildrenAsync(user);
         }
-        user.Fee = UpdateFee(user);
         return dep;
     }
 
@@ -88,7 +103,7 @@ public class UserService : IUserService
     }
 
 
-    public int UpdateFee(User usr)
+    public int GetFee(User usr)
     {
         int fee = 0; // default | if no Department
 
@@ -98,6 +113,37 @@ public class UserService : IUserService
             fee = 20; // Fee for Multiple Departments TODO: PreProcessor Define
 
         return fee;
+    }
+
+    public bool IsRegular(User usr)
+    {
+        bool ret = true; // Assume Active by design of upcoming for Loop
+        DateTime endDate = DateTime.Today.AddMonths(-1); // Start Last Month since the current is not usually not finished
+        DateTime startDate = endDate.AddYears(-1); // 1 year back from Starting Date
+
+        Debug.WriteLine("-----------------------");
+        for (DateTime dt = startDate; dt <= endDate; dt = dt.AddMonths(1))
+        {
+            bool didTrainInMonth = usr.TrainingDays.Any(tDay => tDay.Date.Month == dt.Month);
+            Debug.WriteLine("{0:M/yyyy} - {1} - {2}", dt, usr.Name, didTrainInMonth);
+            if (!didTrainInMonth)
+            {
+                ret = false;
+                Debug.WriteLine("Inactive!");
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+    public void updateUserLocals(User user, bool getRegular = false)
+    {
+        if (getRegular)
+            user.Active = IsRegular(user);
+        
+        user.HasBirthday = DateTime.Today == user.Birthday.Date;
+        user.Fee = GetFee(user);
     }
 
 
@@ -110,7 +156,7 @@ public class UserService : IUserService
         var users = await Database.GetAllWithChildrenAsync<User>();
         foreach (User user in users)
         {
-            user.Fee = UpdateFee(user);
+            updateUserLocals(user, true);
             //user.TrainingDays = (ObservableCollection<TrainingDays>)user.TrainingDays.OrderBy(d => d.Date);
             //user.TrainingDays.Sort(tDay => tDay.Date, System.ComponentModel.ListSortDirection.Descending);
             //user.TrainingDays = (ObservableCollection<TrainingDays>)user.TrainingDays.OrderByDescending(tday => tday.Date.Ticks);

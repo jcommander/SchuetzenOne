@@ -5,7 +5,7 @@ namespace SchuetzenOne.ViewModels;
 
 public partial class UserListViewModel : BaseViewModel
 {
-    public ObservableCollection<User> Users { get; } = new();
+    public ObservableCollection<User> Users { get; set; } = new();
 
     private Random Rand;
     private readonly IUserService _userService;
@@ -43,25 +43,7 @@ public partial class UserListViewModel : BaseViewModel
 
             foreach (var user in users)
             {
-                DateTime endDate = DateTime.Today.AddMonths(-1); // Start Last Month since the current is not usually not finished
-                DateTime startDate = endDate.AddYears(-1); // 1 year back from Starting Date
-                user.Active = true; // Assume Active by design of upcoming for Loop
 
-                Debug.WriteLine("-----------------------");
-                for (DateTime dt = startDate; dt <= endDate; dt = dt.AddMonths(1))
-                {
-                    bool didTrainInMonth = user.TrainingDays.Any(tDay => tDay.Date.Month == dt.Month);
-                    Debug.WriteLine("{0:M/yyyy} - {1} - {2}", dt, user.Name, didTrainInMonth);
-                    if (!didTrainInMonth)
-                    {
-                        user.Active = false;
-                        Debug.WriteLine("Inactive!");
-                        break;
-                    }
-                }
-
-                user.HasBirthday = DateTime.Today == user.Birthday.Date;
-                user.Fee = _userService.UpdateFee(user);
                 Users.Add(user);
             }
 

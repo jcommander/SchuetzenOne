@@ -34,23 +34,26 @@
             <Label Text="Name" />
             <Entry Text="{Binding User.Name}" >
 				<Entry.Behaviors>
-                    <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding EntryEnterCommand}"/>
                     <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding AddUpdateUserCommand}"/>
 				</Entry.Behaviors>
             </Entry>
             <Label Text="E-Mail" />
             <Entry Text="{Binding User.Email}" >
                 <Entry.Behaviors>
-                    <toolkit:EventToCommandBehavior EventName="Focused" Command="{Binding EntryEnterCommand}"/>
                     <toolkit:EventToCommandBehavior EventName="Unfocused" Command="{Binding AddUpdateUserCommand}"/>
                 </Entry.Behaviors>
             </Entry>
-            <Label Text="Geburtstag" /> 
-            <DatePicker Date="{Binding User.Birthday}"/>
+            <Label Text="Geburtstag" />
+            <DatePicker Date="{Binding User.Birthday}">
+                <DatePicker.Behaviors>
+                    <toolkit:EventToCommandBehavior EventName="DateSelected" Command="{Binding AddUpdateUserCommand}"/>
+                </DatePicker.Behaviors>
+            </DatePicker>
+            <!--
             <Button Text="Speichern"
                         Command="{Binding AddUpdateUserCommand }" />
-
-            <Label Padding="0, 12, 0, 0" Text="Gebühr" />
+            -->
+            <Label Padding="0, 24, 0, 0" Text="Gebühr" />
             <Label Padding="8, 0, 0, 0" Text="{Binding User.Fee, StringFormat='{0} €'}"
                    VerticalTextAlignment="Center"/>
 

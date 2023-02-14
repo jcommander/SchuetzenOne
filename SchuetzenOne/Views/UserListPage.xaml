@@ -31,7 +31,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:User">
                         <Frame Margin="8" Padding="30">
-                            <Grid ColumnDefinitions="*, Auto">
+                            <Grid ColumnDefinitions="*, 50">
                                 <Label Text="{Binding Name}"
                                    VerticalTextAlignment="Center"/>
                                 <HorizontalStackLayout Grid.Column="1" Spacing="12">

@@ -4,7 +4,7 @@ namespace SchuetzenOne.Services
 {
     public interface IUserService
     {
-        int UpdateFee(User usr);
+        void updateUserLocals(User user, bool getRegular = false);
         List<Department> AllDepartments { get; set; }
         Task<TrainingDays> AddDateAsync(User user, DateTime date);
         Task<List<User>> GetUsersAsync();
