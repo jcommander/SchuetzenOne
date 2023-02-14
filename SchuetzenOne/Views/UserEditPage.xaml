@@ -53,7 +53,11 @@
             <Button Text="Speichern"
                         Command="{Binding AddUpdateUserCommand }" />
             -->
-            <Label Padding="0, 24, 0, 0" Text="Gebühr" />
+            <Line
+                Stroke="LightGray"
+                StrokeLineCap="Round"
+                X2="150" />
+            <Label Padding="0, 12, 0, 0" Text="Gebühr" />
             <Label Padding="8, 0, 0, 0" Text="{Binding User.Fee, StringFormat='{0} €'}"
                    VerticalTextAlignment="Center"/>
 
@@ -69,12 +73,12 @@
             Grid.Column="0"
             Grid.Row="1"
             RowSpacing="12"
-            ColumnDefinitions="300"
+            ColumnDefinitions="*"
             RowDefinitions="*,auto,auto">
             <ScrollView VerticalOptions="EndAndExpand" Grid.Row="0" HeightRequest="100">
                 <CollectionView
                         x:Name="departmentList"
-                        VerticalOptions="Fill"
+                        VerticalOptions="End"
                         ItemsSource="{Binding User.Departments}"
                         SelectionMode="Single">
                     <CollectionView.ItemTemplate>
@@ -89,22 +93,22 @@
             <Line Grid.Row="1" 
                 Stroke="LightGray"
                 StrokeLineCap="Round"
-                X2="275" />
+                X2="150" />
             <HorizontalStackLayout Grid.Row="2">
                 <Picker Title="Abteilung"
                         Margin="5"
-                        WidthRequest="120"
+                        WidthRequest="100"
                         ItemsSource="{Binding AllDepartments}"
                         ItemDisplayBinding="{Binding Name}"
                         SelectedItem="{Binding DepartmentPicker}"/>
                 <Button 
-                    Text="Hinzufügen"
-                    HeightRequest="45"
+                    Text="+"
+                    HeightRequest="40"
                     HorizontalOptions="StartAndExpand"
                     Command="{Binding DepartmentSubmitCommand}"/>
                 <Button 
-                    Text="Entfernen"
-                    HeightRequest="45"
+                    Text="-"
+                    HeightRequest="40"
                     HorizontalOptions="StartAndExpand"
                     Command="{Binding DepartmentRemoveCommand}"/>
             </HorizontalStackLayout>
