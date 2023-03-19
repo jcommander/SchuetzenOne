@@ -13,7 +13,7 @@ public partial class UserDetailViewModel : BaseViewModel
     [ObservableProperty]
     bool isRefreshing;
 
-    public List<Department> AllDepartments { get; set; } = new List<Department>();
+    public List<Department> AllDepartments { get; set; }
 
     [ObservableProperty]
     public DateTime _trainingDatePicker = DateTime.UtcNow;
@@ -21,63 +21,52 @@ public partial class UserDetailViewModel : BaseViewModel
     [ObservableProperty]
     public Department _departmentPicker = null;
 
-    string entryText = "";
-
     private readonly IUserService _userService;
     public UserDetailViewModel(IUserService userService)
     {
         _userService = userService;
         AllDepartments = _userService.AllDepartments; // Get Departments from UserService
+        //DepartmentPicker = AllDepartments.First();
     }
-
-    [RelayCommand]
-    async Task DateSubmit()
-    {
-        await _userService.AddDateAsync(User, TrainingDatePicker.Date);
-        updateInfo(true);
-        //trainingDays.Add(result);
-    }
-
-    private void updateInfo(bool getRegular = false)
+    private void UpdateInfo(bool getRegular = false)
     {
         OnPropertyChanging(nameof(User));
-        _userService.updateUserLocals(User, getRegular);
+        _userService.UpdateUserLocals(User, getRegular);
         OnPropertyChanged(nameof(User));
     }
 
     [RelayCommand]
-    async Task DepartmentSubmit()
+    async void AddRemoveTrainingDay(string strRemove = "False")
     {
-        if (DepartmentPicker != null)
+        bool removeDay = Convert.ToBoolean(strRemove);
+        bool hasDay = User.TrainingDays.FirstOrDefault(t => t.Date == TrainingDatePicker.Date) != null; // Contains doesn't work here
+        if (removeDay == hasDay)
         {
-            await _userService.AddDepartmentAsync(User, DepartmentPicker);
-            updateInfo(false);
+            Debug.WriteLine((removeDay ? "Removing " : "Adding ") + TrainingDatePicker.Date);
+            await _userService.AddRemoveTrainingDayAsync(User, TrainingDatePicker.Date, removeDay);
+            UpdateInfo(true);
+        }
+        //trainingDays.Add(result);
+    }
+
+    [RelayCommand]
+    async Task AddRemoveDepartment(string strRemove = "False")
+    {
+        bool removeDep = Convert.ToBoolean(strRemove);
+        if (DepartmentPicker is not null)
+        {
+            bool hasDep = User.Departments.FirstOrDefault(d => d.ID == DepartmentPicker.ID) != null; // Contains doesn't work here
+            if (removeDep == hasDep)
+            {
+                Debug.WriteLine((removeDep ? "Removing " : "Adding ") + DepartmentPicker.Name);
+                await _userService.AddRemoveDepartmentAsync(User, DepartmentPicker, removeDep);
+                UpdateInfo(false);
+            }
         }
         else
             await Shell.Current.DisplayAlert("Abteilung wählen", "Bitte wähle eine Abteilung für deinen Schützen", "OK");
 
         //trainingDays.Add(result);
-    }
-
-    [RelayCommand]
-    async Task DepartmentRemove()
-    {
-        if (DepartmentPicker != null)
-        {
-            await _userService.RemoveDepartmentAsync(User, DepartmentPicker);
-            updateInfo(false);
-        }
-        else
-            await Shell.Current.DisplayAlert("Abteilung wählen", "Bitte wähle eine Abteilung für deinen Schützen", "OK");
-
-        //trainingDays.Add(result);
-    }
-
-    [RelayCommand]
-    async Task GetTrainingDays()
-    {
-        var u = await _userService.GetUserAsync(User.ID, true);
-        User = u;
     }
 
     [RelayCommand]

@@ -77,7 +77,6 @@
             RowDefinitions="*,auto,auto">
             <ScrollView VerticalOptions="EndAndExpand" Grid.Row="0" HeightRequest="100">
                 <CollectionView
-                        x:Name="departmentList"
                         VerticalOptions="End"
                         ItemsSource="{Binding User.Departments}"
                         SelectionMode="Single">
@@ -105,12 +104,12 @@
                     Text="+"
                     HeightRequest="40"
                     HorizontalOptions="StartAndExpand"
-                    Command="{Binding DepartmentSubmitCommand}"/>
+                    Command="{Binding AddRemoveDepartmentCommand}"/>
                 <Button 
                     Text="-"
                     HeightRequest="40"
                     HorizontalOptions="StartAndExpand"
-                    Command="{Binding DepartmentRemoveCommand}"/>
+                    Command="{Binding AddRemoveDepartmentCommand}" CommandParameter="True"/>
             </HorizontalStackLayout>
         </Grid>
         <Grid
@@ -121,18 +120,13 @@
             RowSpacing="12">
             <ScrollView Grid.Row="0">
                 <CollectionView 
-                    x:Name="trainingDaysList"
-                    VerticalOptions="Fill"
+                    VerticalOptions="End"
                     ItemsSource="{Binding User.TrainingDays}"
                     SelectionMode="Single">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:TrainingDays">
-                            <Grid ColumnDefinitions="*, auto" ColumnSpacing="12">
-                                <Label Grid.Column="0"
-                                    Text="{Binding ID}"/>
-                                <Label Grid.Column="1"
-                                    Text="{Binding Date.Date}"/>
-                            </Grid>
+                            <Label HorizontalTextAlignment="Center"
+                                   Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
@@ -149,10 +143,11 @@
                 <DatePicker Date="{Binding TrainingDatePicker}"/>
                 <Button Text="Hinzufügen"
                         HorizontalOptions="StartAndExpand"
-                        Command="{Binding DateSubmitCommand}"/>
-                <Button Text="Refresh"
+                        Command="{Binding AddRemoveTrainingDayCommand}"/>
+                <Button Text="Löschen"
                         HorizontalOptions="StartAndExpand"
-                        Command="{Binding GetTrainingDaysCommand}"/>
+                        Command="{Binding AddRemoveTrainingDayCommand}"
+                        CommandParameter="True"/>
             </VerticalStackLayout>
         </Grid>
 

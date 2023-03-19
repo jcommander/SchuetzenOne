@@ -7,18 +7,11 @@ public partial class UserListViewModel : BaseViewModel
 {
     public ObservableCollection<User> Users { get; set; } = new();
 
-    private Random Rand;
     private readonly IUserService _userService;
     public UserListViewModel(IUserService userService)
     {
         _userService = userService;
-        Rand = new Random();
         //Task.Run(async () => await GetUsersAsync());
-    }
-
-    public void Refresh()
-    {
-        Task.Run(async () => await GetUsersAsync());
     }
 
     [ObservableProperty]
