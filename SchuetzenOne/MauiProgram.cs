@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Maui;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using SchuetzenOne.Services;
-using SchuetzenOne.ViewModels;
 using SchuetzenOne.Views;
 
 namespace SchuetzenOne;
